@@ -513,7 +513,57 @@ git bisect reset             # Done
 
 ---
 
-## 15. 🔄 Common Workflows
+## 15. 🗑 Remove Git Repository
+
+Sometimes you need to remove Git tracking or disconnect from GitHub.
+
+### Remove Git completely from a project (local)
+```bash
+# This removes ALL git history — your project becomes a normal folder
+rm -rf .git
+```
+
+### Remove remote connection only (keep local git)
+```bash
+# Disconnect from GitHub but keep local commits
+git remote remove origin
+
+# Verify remote is removed
+git remote -v                # Should show nothing
+```
+
+### Delete a repo from GitHub
+```
+Go to GitHub → Your Repo → Settings → Scroll to bottom
+→ "Danger Zone" → "Delete this repository"
+```
+
+### Re-initialize and connect to a NEW repo
+```bash
+# Step 1: Remove old git
+rm -rf .git
+
+# Step 2: Start fresh
+git init
+git add .
+git commit -m "Initial commit"
+
+# Step 3: Connect to new GitHub repo
+git remote add origin https://github.com/salmanghouridev/new-repo.git
+git branch -M main
+git push -u origin main
+```
+
+### Switch to a different GitHub repo (keep history)
+```bash
+# Just change the remote URL
+git remote set-url origin https://github.com/salmanghouridev/different-repo.git
+git push -u origin main
+```
+
+---
+
+## 16. 🔄 Common Workflows
 
 ### 🟢 Daily Workflow (Solo Developer)
 ```bash
@@ -554,29 +604,115 @@ git push -u origin hotfix-bug
 
 ---
 
-## 16. 📋 Cheat Sheet
+## 17. 📋 Cheat Sheet
 
+### 🟢 Setup & Init
 | Command | Description |
 |---------|-------------|
 | `git init` | Initialize new repo |
 | `git clone <url>` | Clone a repo |
-| `git status` | Check status |
-| `git add .` | Stage all changes |
-| `git commit -m "msg"` | Commit changes |
+| `git config --global user.name "name"` | Set username |
+| `git config --global user.email "email"` | Set email |
+| `git config --list` | View all config |
+
+### 📤 Basic Workflow
+| Command | Description |
+|---------|-------------|
+| `git status` | Check status of files |
+| `git add <file>` | Stage a specific file |
+| `git add .` | Stage ALL changes |
+| `git add *.py` | Stage all Python files |
+| `git commit -m "msg"` | Commit staged changes |
+| `git commit -am "msg"` | Add + commit modified files |
 | `git push` | Push to remote |
-| `git pull` | Pull from remote |
-| `git branch` | List branches |
-| `git checkout -b <name>` | Create & switch branch |
-| `git merge <branch>` | Merge branch |
-| `git log --oneline` | View compact history |
-| `git stash` | Save work temporarily |
-| `git stash pop` | Restore stashed work |
-| `git reset --soft HEAD~1` | Undo last commit (keep files) |
-| `git diff` | View changes |
-| `git remote -v` | View remotes |
-| `git tag -a v1.0 -m "msg"` | Create tag |
+| `git push -u origin main` | Push & set upstream tracking |
+| `git pull` | Pull latest from remote |
+| `git pull --rebase` | Pull with rebase (cleaner) |
+| `git fetch` | Download changes (don't merge) |
+
+### 🌿 Branching
+| Command | Description |
+|---------|-------------|
+| `git branch` | List all local branches |
+| `git branch -a` | List all branches (local + remote) |
+| `git branch <name>` | Create a new branch |
+| `git checkout -b <name>` | Create & switch to new branch |
+| `git checkout <branch>` | Switch to existing branch |
+| `git switch <branch>` | Switch branch (modern) |
+| `git switch -c <name>` | Create & switch (modern) |
+| `git branch -m <new-name>` | Rename current branch |
+| `git branch -d <name>` | Delete branch (safe) |
+| `git branch -D <name>` | Force delete branch |
+| `git push origin --delete <name>` | Delete remote branch |
+| `git push -u origin <branch>` | Push new branch to GitHub |
+
+### 🔀 Merging & Rebasing
+| Command | Description |
+|---------|-------------|
+| `git merge <branch>` | Merge branch into current |
 | `git rebase main` | Rebase onto main |
+| `git rebase -i HEAD~3` | Interactive rebase (squash etc.) |
 | `git cherry-pick <hash>` | Apply specific commit |
+
+### ↩️ Undoing Changes
+| Command | Description |
+|---------|-------------|
+| `git restore <file>` | Discard file changes |
+| `git restore --staged <file>` | Unstage a file |
+| `git reset --soft HEAD~1` | Undo last commit (keep changes) |
+| `git reset --hard HEAD~1` | Undo last commit (delete changes) ⚠️ |
+| `git revert <hash>` | Reverse a commit (safe) |
+| `git commit --amend -m "msg"` | Edit last commit message |
+
+### 📦 Stashing
+| Command | Description |
+|---------|-------------|
+| `git stash` | Save work temporarily |
+| `git stash save "message"` | Stash with description |
+| `git stash list` | List all stashes |
+| `git stash pop` | Restore & remove stash |
+| `git stash apply` | Restore & keep stash |
+| `git stash drop` | Delete a stash |
+| `git stash clear` | Delete ALL stashes |
+
+### 📜 History & Inspection
+| Command | Description |
+|---------|-------------|
+| `git log` | View commit history |
+| `git log --oneline` | Compact history |
+| `git log --oneline --graph --all` | Visual branch graph |
+| `git log -5` | Last 5 commits |
+| `git diff` | View unstaged changes |
+| `git diff --staged` | View staged changes |
+| `git diff main..feature` | Compare two branches |
+| `git blame <file>` | See who changed each line |
+| `git show <hash>` | Show commit details |
+
+### 🌐 Remote & Repos
+| Command | Description |
+|---------|-------------|
+| `git remote -v` | View remotes |
+| `git remote add origin <url>` | Add remote |
+| `git remote set-url origin <url>` | Change remote URL |
+| `git remote remove origin` | Remove remote connection |
+| `rm -rf .git` | Remove git completely ⚠️ |
+
+### 🏷 Tags
+| Command | Description |
+|---------|-------------|
+| `git tag` | List all tags |
+| `git tag -a v1.0 -m "msg"` | Create annotated tag |
+| `git push origin v1.0` | Push tag to GitHub |
+| `git push origin --tags` | Push all tags |
+| `git tag -d v1.0` | Delete local tag |
+
+### 🧹 Cleanup
+| Command | Description |
+|---------|-------------|
+| `git clean -n` | Preview untracked file deletion |
+| `git clean -f` | Delete untracked files |
+| `git clean -fd` | Delete untracked files & dirs |
+| `git push --force-with-lease` | Safe force push |
 
 ---
 
